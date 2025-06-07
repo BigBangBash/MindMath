@@ -1,15 +1,143 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MindMath</title>
-</head>
-<body>
-    <header>
-        <h1>Willkommen auf der ersten Verion von MindMath</h1>
-    </header>
-    
-    
-</body>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Kopfrechnen Übung</title>
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: system-ui, sans-serif;
+        background: #fafafa;
+      }
+
+      #container {
+        text-align: center;
+      }
+
+      .hidden {
+        visibility: hidden;
+      }
+
+      button {
+        padding: 1rem 2rem;
+        font-size: 1.2rem;
+        border: none;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      #number {
+        font-size: 4rem;
+        margin: 2rem 0;
+        min-width: 10rem;
+        min-height: 5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #input-section {
+        margin-top: 2rem;
+      }
+
+      input[type="number"] {
+        padding: 0.5rem;
+        font-size: 1.2rem;
+        width: 120px;
+        text-align: center;
+        border: 1px solid #ccc;
+        border-radius: 0.3rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <button id="startBtn">Start</button>
+
+      <div id="number" class="hidden"></div>
+
+      <div id="input-section" class="hidden">
+        <input type="number" id="answer" placeholder="Summe" />
+        <button id="checkBtn">Prüfen</button>
+        <div id="result" style="margin-top:1rem;font-size:1.2rem;"></div>
+      </div>
+    </div>
+
+    <script>
+      const startBtn = document.getElementById("startBtn");
+      const numberDiv = document.getElementById("number");
+      const inputSection = document.getElementById("input-section");
+      const answerInput = document.getElementById("answer");
+      const checkBtn = document.getElementById("checkBtn");
+      const resultDiv = document.getElementById("result");
+
+      let numbers = [];
+      let sum = 0;
+
+      function showNumberSequence() {
+        // Reset state
+        numbers = [];
+        sum = 0;
+        let count = 0;
+
+        // UI setup
+        startBtn.classList.add("hidden");
+        numberDiv.textContent = "Start";
+        numberDiv.classList.remove("hidden");
+        resultDiv.textContent = "";
+
+        // After 1 s begin sequence
+        setTimeout(() => {
+          const interval = setInterval(() => {
+            if (count < 5) {
+              const num = Math.floor(Math.random() * 90) + 10; // 10‑99
+              numbers.push(num);
+              sum += num;
+              numberDiv.textContent = num;
+              count++;
+
+              // Hide number after exactly 5 s
+              setTimeout(() => {
+                numberDiv.textContent = "";
+              }, 5000);
+            } else {
+              clearInterval(interval);
+              numberDiv.classList.add("hidden");
+              inputSection.classList.remove("hidden");
+              answerInput.focus();
+            }
+          }, 5000); // new number every 5 s
+        }, 1000);
+      }
+
+      startBtn.addEventListener("click", showNumberSequence);
+
+      checkBtn.addEventListener("click", () => {
+        const userAnswer = Number(answerInput.value);
+        if (Number.isNaN(userAnswer)) {
+          resultDiv.textContent = "Bitte eine Zahl eingeben.";
+          return;
+        }
+
+        if (userAnswer === sum) {
+          resultDiv.textContent = "✅ Richtig! Gute Arbeit.";
+        } else {
+          resultDiv.textContent = `❌ Falsch. Die korrekte Summe ist ${sum}.`;
+        }
+
+        // Zurücksetzen nach 3 s
+        setTimeout(() => {
+          inputSection.classList.add("hidden");
+          answerInput.value = "";
+          startBtn.classList.remove("hidden");
+        }, 3000);
+      });
+    </script>
+  </body>
 </html>
