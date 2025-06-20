@@ -2,142 +2,54 @@
 <html lang="de">
   <head>
     <meta charset="UTF-8" />
-    <title>Kopfrechnen Übung</title>
-    <style>
-      html,
-      body {
-        height: 100%;
-        margin: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: system-ui, sans-serif;
-        background: #fafafa;
-      }
-
-      #container {
-        text-align: center;
-      }
-
-      .hidden {
-        visibility: hidden;
-      }
-
-      button {
-        padding: 1rem 2rem;
-        font-size: 1.2rem;
-        border: none;
-        border-radius: 0.5rem;
-        cursor: pointer;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      }
-
-      #number {
-        font-size: 4rem;
-        margin: 2rem 0;
-        min-width: 10rem;
-        min-height: 5rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      #input-section {
-        margin-top: 2rem;
-      }
-
-      input[type="number"] {
-        padding: 0.5rem;
-        font-size: 1.2rem;
-        width: 120px;
-        text-align: center;
-        border: 1px solid #ccc;
-        border-radius: 0.3rem;
-      }
-    </style>
+    <title>Dein Kopfrechentrainer</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div id="container">
-      <button id="startBtn">Start</button>
+    <main id="container">
+      <!-- Konfigurations-Formular -->
+      <form id="configForm">
+        <h1>MELTDOWN</h1>
 
-      <div id="number" class="hidden"></div>
+        <!-- 4 Labels in Zeiel 1, 4 Eingabefelder in Zeile 2 -->
+        <div class="grid-specs">
+          <!-- Zeile - Labels-->
+          <label for="count">Anzahl der Zahlen</label>
+          <label for="displayTime">Anzeigedauer je Zahl (Sekunden)</label>
+          <label for="minNumber">Untere Zahlengrenze</label>
+          <label for="maxNumber">Obere Zahlengrenze</label>
 
+          <!-- Zeile 2 - Inputs (in der sleben Reihenfolge)-->
+          <input type="number" id="count"       min="1" max="20" value="10" />
+          <input type="number" id="displayTime" min="1" max="10" value="3" />
+          <input type="number" id="minNumber"  value="1" />
+          <input type="number" id="maxNumber"  value="9" />
+        </div>
+
+            <!-- Rechen­operationen -->
+        <fieldset>
+          <legend>Erlaubte Rechenoperationen</legend>
+          <label><input type="checkbox" name="ops" value="+" checked /> + (Addieren)</label>
+          <label><input type="checkbox" name="ops" value="-" /> − (Subtrahieren)</label>
+          <label><input type="checkbox" name="ops" value="*" /> × (Multiplizieren)</label>
+          <label><input type="checkbox" name="ops" value="/" /> ÷ (Dividieren)</label>
+        </fieldset>
+        
+        <!-- Start Button -->
+        <button type="submit">Start</button>
+      </form>
+
+      <!-- Anzeige -->
+      <div id="number" class="hidden" role="status" aria-live="polite"></div>
+
+      <!-- Antwort -->
       <div id="input-section" class="hidden">
-        <input type="number" id="answer" placeholder="Summe" />
-        <button id="checkBtn">Prüfen</button>
-        <div id="result" style="margin-top:1rem;font-size:1.2rem;"></div>
+        <input type="number" id="answer" placeholder="Ergebnis" />
+        <button id="checkBtn" type="button">Prüfen</button>
+        <div id="result" class="result" role="status" aria-live="polite"></div>
       </div>
-    </div>
+    </main>
 
-    <script>
-      const startBtn = document.getElementById("startBtn");
-      const numberDiv = document.getElementById("number");
-      const inputSection = document.getElementById("input-section");
-      const answerInput = document.getElementById("answer");
-      const checkBtn = document.getElementById("checkBtn");
-      const resultDiv = document.getElementById("result");
-
-      let numbers = [];
-      let sum = 0;
-
-      function showNumberSequence() {
-        // Reset state
-        numbers = [];
-        sum = 0;
-        let count = 0;
-
-        // UI setup
-        startBtn.classList.add("hidden");
-        numberDiv.textContent = "Start";
-        numberDiv.classList.remove("hidden");
-        resultDiv.textContent = "";
-
-        // After 1 s begin sequence
-        setTimeout(() => {
-          const interval = setInterval(() => {
-            if (count < 5) {
-              const num = Math.floor(Math.random() * 90) + 10; // 10‑99
-              numbers.push(num);
-              sum += num;
-              numberDiv.textContent = num;
-              count++;
-
-              // Hide number after exactly 5 s
-              setTimeout(() => {
-                numberDiv.textContent = "";
-              }, 5000);
-            } else {
-              clearInterval(interval);
-              numberDiv.classList.add("hidden");
-              inputSection.classList.remove("hidden");
-              answerInput.focus();
-            }
-          }, 5000); // new number every 5 s
-        }, 1000);
-      }
-
-      startBtn.addEventListener("click", showNumberSequence);
-
-      checkBtn.addEventListener("click", () => {
-        const userAnswer = Number(answerInput.value);
-        if (Number.isNaN(userAnswer)) {
-          resultDiv.textContent = "Bitte eine Zahl eingeben.";
-          return;
-        }
-
-        if (userAnswer === sum) {
-          resultDiv.textContent = "✅ Richtig! Gute Arbeit.";
-        } else {
-          resultDiv.textContent = `❌ Falsch. Die korrekte Summe ist ${sum}.`;
-        }
-
-        // Zurücksetzen nach 3 s
-        setTimeout(() => {
-          inputSection.classList.add("hidden");
-          answerInput.value = "";
-          startBtn.classList.remove("hidden");
-        }, 3000);
-      });
-    </script>
+    <script src="app.js" defer></script>
   </body>
 </html>
